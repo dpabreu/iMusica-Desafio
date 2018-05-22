@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -46,7 +47,7 @@ public class ServiceController extends Controller{
 			entity.setPreco(produto.getPreco());
 			entity.setQuantidade(produto.getQuantidade());
  
-			repository.Salvar(entity);
+			repository.salvar(entity);
 			
 			Status status = Status.OK;
 			response = build(status, entity);
@@ -144,7 +145,30 @@ public class ServiceController extends Controller{
 		} catch (Exception e) {
 			return "Erro ao excluir o registro! " + e.getMessage();
 		}
+	}
+	
+	/**
+	 * Realizando venda de um produto
+	 * */
+	@PUT
+	@Consumes("application/json; charset=UTF-8")	
+	@Path("/venda")
+	public Response venda(@QueryParam("idProduto") Integer idProduto, @QueryParam("quantidade") Integer quantidade){
+		Response response = null;
+		ProdutoEntity entity = null;
+		try {
+			entity = repository.realizarVenda(idProduto, quantidade);
  
-	}	
+			Status status = Status.OK;
+			response = build(status, entity);
+
+			return response;
+		} catch (Exception e) {
+			Status status = Status.NOT_FOUND;
+			response = build(status, entity);
+
+			return response;
+		}		
+	}
 
 }

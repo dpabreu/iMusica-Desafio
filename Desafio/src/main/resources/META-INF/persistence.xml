@@ -6,7 +6,7 @@
 			 xmlns="http://java.sun.com/xml/ns/persistence">
 
     
-	<persistence-unit name="persistence_unit_desafio" transaction-type="JTA">
+	<persistence-unit name="persistence_unit_desafio" transaction-type="RESOURCE_LOCAL">
 	
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		

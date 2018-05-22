@@ -22,7 +22,7 @@ public class ProdutoRepository {
 		this.em = this.emFactory.createEntityManager();
 	}
 	
-	public void Salvar(ProdutoEntity produto){
+	public void salvar(ProdutoEntity produto){
 			this.em.getTransaction().begin();
 			this.em.persist(produto);
 			this.em.getTransaction().commit();
@@ -54,5 +54,19 @@ public class ProdutoRepository {
 		this.em.getTransaction().commit();
 	}
 	
-//	public void realizarVenda(Integer idProduto)
+	public ProdutoEntity realizarVenda(Integer idProduto, Integer qtdVenda){
+		ProdutoEntity produto = this.GetProdutoById(idProduto);
+		
+		produto.setQuantidade(produto.getQuantidade() - qtdVenda);
+		
+		try {
+			this.em.getTransaction().begin();;
+			this.em.merge(produto);
+		} finally {
+			this.em.getTransaction().commit();
+		}
+
+		return produto;
+		
+	}
 }
