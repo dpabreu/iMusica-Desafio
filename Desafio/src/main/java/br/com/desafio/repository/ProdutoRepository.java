@@ -3,68 +3,68 @@ package br.com.desafio.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 
 import br.com.desafio.repository.entity.ProdutoEntity;
 
-//@Stateless
+@Stateless
+/**
+ * 
+ * @author daniel
+ * A anotação TransactionManagement assegura que todos os métodos
+ * do EJB sejam transacionais. Resolvendo o problema de concorrência
+ * no método realizarVenda().
+ * Mesmo podendo usar a anotação TransactionAttribute somente no método,
+ * achei uma melhor estratégia usar a anotação global, pois temos métodos
+ * de CRUD que também precisam ser transacionais.
+ * 
+ */
+@TransactionManagement(TransactionManagementType.CONTAINER)
 public class ProdutoRepository {
 	
-	
-	private final EntityManagerFactory emFactory;
+	@PersistenceContext
+	private EntityManager em;
 
-	private final EntityManager em;
-
-	public ProdutoRepository() {
-		this.emFactory = Persistence.createEntityManagerFactory("persistence_unit_desafio");
-		this.em = this.emFactory.createEntityManager();
-	}
-	
 	public void salvar(ProdutoEntity produto){
-			this.em.getTransaction().begin();
-			this.em.persist(produto);
-			this.em.getTransaction().commit();
+		this.em.persist(produto);
+		this.em.flush();
 	}
 
 	public void Alterar(ProdutoEntity produto) {
-		this.em.getTransaction().begin();
 		this.em.merge(produto);
-		this.em.getTransaction().commit();
+		this.em.flush();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ProdutoEntity> GetProdutos() {
+	public List<ProdutoEntity> getProdutos() {
 		List<ProdutoEntity> produtos = new ArrayList<ProdutoEntity>();
 		produtos = this.em.createQuery("select p from produto p order by p.nome").getResultList();
 		return produtos;
 
 	}
 
-	public ProdutoEntity GetProdutoById(Integer idProduto) {
+	public ProdutoEntity getProdutoById(Integer idProduto) {
 		return this.em.find(ProdutoEntity.class, idProduto);
 	}
 
-	public void Excluir(Integer idProduto) {
-		ProdutoEntity produto = this.GetProdutoById(idProduto);
+	public void excluir(Integer idProduto) {
+		ProdutoEntity produto = this.getProdutoById(idProduto);
 
-		this.em.getTransaction().begin();
 		this.em.remove(produto);
-		this.em.getTransaction().commit();
+		this.em.flush();
 	}
 	
 	public ProdutoEntity realizarVenda(Integer idProduto, Integer qtdVenda){
-		ProdutoEntity produto = this.GetProdutoById(idProduto);
+		ProdutoEntity produto = this.getProdutoById(idProduto);
 		
 		produto.setQuantidade(produto.getQuantidade() - qtdVenda);
 		
-		try {
-			this.em.getTransaction().begin();;
-			this.em.merge(produto);
-		} finally {
-			this.em.getTransaction().commit();
-		}
+		this.em.merge(produto);
+		this.em.flush();
 
 		return produto;
 		

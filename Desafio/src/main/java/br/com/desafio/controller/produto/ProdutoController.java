@@ -1,8 +1,12 @@
-package br.com.desafio.controller;
+package br.com.desafio.controller.produto;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,8 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.glassfish.jersey.process.internal.RequestScoped;
-
+import br.com.desafio.controller.Controller;
 import br.com.desafio.http.Produto;
 import br.com.desafio.repository.ProdutoRepository;
 import br.com.desafio.repository.entity.ProdutoEntity;
@@ -24,11 +27,11 @@ import br.com.desafio.repository.entity.ProdutoEntity;
 @RequestScoped
 @Path("/service")
 @Produces("application/json; charset=UTF-8")
-public class ServiceController extends Controller{
+public class ProdutoController extends Controller{
 	
 	
-//	@EJB
-	public final ProdutoRepository repository = new ProdutoRepository();
+	@Inject
+	private ProdutoRepository repository;
 	
 	/**
 	 * @Consumes - determina o formato dos dados que vamos postar
@@ -43,6 +46,9 @@ public class ServiceController extends Controller{
 		Response response = null;
 		ProdutoEntity entity = new ProdutoEntity();
 		try {
+			InitialContext init = new InitialContext();
+			repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
+
 			entity.setNome(produto.getNome());
 			entity.setPreco(produto.getPreco());
 			entity.setQuantidade(produto.getQuantidade());
@@ -72,6 +78,8 @@ public class ServiceController extends Controller{
 		ProdutoEntity entity = new ProdutoEntity();
  
 		try {
+			InitialContext init = new InitialContext();
+			repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
  
 			entity.setIdProduto(produto.getIdProduto());
 			entity.setNome(produto.getNome());
@@ -95,21 +103,24 @@ public class ServiceController extends Controller{
 	
 	/**
 	 * Esse método lista todos produtos cadastrados na base
+	 * @throws NamingException 
 	 * */
 	@GET
 	@Path("/readAll")
-	public List<Produto> readAll(){
+	public List<Produto> readAll() throws NamingException{
  
 		List<Produto> produtos =  new ArrayList<Produto>();
- 
-		List<ProdutoEntity> produtosEntity = repository.GetProdutos();
+
+		InitialContext init = new InitialContext();
+		repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
+
+		List<ProdutoEntity> produtosEntity = repository.getProdutos();
 
 		produtosEntity.stream().forEach((produtoEntity) -> {
 			produtos.add(new Produto(produtoEntity.getIdProduto(), produtoEntity.getNome(), produtoEntity.getPreco(),
 					produtoEntity.getQuantidade()));
 		});
-		
-		
+
 		return produtos;
 	}
  
@@ -119,13 +130,19 @@ public class ServiceController extends Controller{
 	@GET
 	@Path("/read/{idProduto}")
 	public Produto read(@PathParam("idProduto") Integer idProduto){
- 
-		ProdutoEntity produtoEntity = repository.GetProdutoById(idProduto);
+
+		try{
+		InitialContext init = new InitialContext();
+		repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
+
+		ProdutoEntity produtoEntity = repository.getProdutoById(idProduto);
  
 		if(produtoEntity != null)
 			return new Produto(produtoEntity.getIdProduto(), produtoEntity.getNome(), produtoEntity.getPreco(),
 					produtoEntity.getQuantidade());
- 
+		}catch (Exception e){
+			
+		}
 		return null;
 	}
 	
@@ -139,7 +156,10 @@ public class ServiceController extends Controller{
 	public String delete(@PathParam("idProduto") Integer idProduto){
  
 		try {
-			repository.Excluir(idProduto);
+			InitialContext init = new InitialContext();
+			repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
+
+			repository.excluir(idProduto);
  
 			return "Registro excluido com sucesso!";
 		} catch (Exception e) {
@@ -156,9 +176,13 @@ public class ServiceController extends Controller{
 	public Response venda(@QueryParam("idProduto") Integer idProduto, @QueryParam("quantidade") Integer quantidade){
 		Response response = null;
 		ProdutoEntity entity = null;
+		
 		try {
-			entity = repository.realizarVenda(idProduto, quantidade);
- 
+			InitialContext init = new InitialContext();
+			repository = (ProdutoRepository) init.lookup("java:module/ProdutoRepository");
+
+			repository.realizarVenda(idProduto, quantidade);
+			
 			Status status = Status.OK;
 			response = build(status, entity);
 
