@@ -1,4 +1,4 @@
-package br.com.desafio.controller;
+package br.com.desafio.service;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

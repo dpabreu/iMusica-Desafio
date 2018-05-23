@@ -7,6 +7,6 @@
 
    	<persistence-unit name="persistence_unit_desafio">
 		<jta-data-source>java:jboss/desafioDS</jta-data-source>
-		<class>br.com.desafio.repository.entity.ProdutoEntity</class>
+		<class>br.com.desafio.entity.produto.ProdutoEntity</class>
 	</persistence-unit>
 </persistence>
