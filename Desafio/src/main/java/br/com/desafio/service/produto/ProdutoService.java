@@ -23,6 +23,9 @@ import javax.ws.rs.core.Response.Status;
 import br.com.desafio.controller.produto.ProdutoController;
 import br.com.desafio.dto.produto.ProdutoDto;
 import br.com.desafio.entity.produto.ProdutoEntity;
+import br.com.desafio.requisicao.produto.ProdutoRequisicao;
+import br.com.desafio.retorno.Retorno;
+import br.com.desafio.retorno.produto.ProdutoRetorno;
 
 @RequestScoped
 @Path("/service")
@@ -114,7 +117,12 @@ public class ProdutoService{
 	 * */
 	@GET
 	@Path("/readAll")
-	public List<ProdutoDto> readAll() throws NamingException{
+	public Response readAll() throws NamingException{
+		Response response = null;
+		ProdutoRetorno produtoRetorno = new ProdutoRetorno();
+		ProdutoRequisicao requisicao = new ProdutoRequisicao();
+
+		List<String> msgsErro = new ArrayList<String>();
 		List<ProdutoDto> produtos =  new ArrayList<ProdutoDto>();
 		
 		try{
@@ -127,13 +135,26 @@ public class ProdutoService{
 				produtos.add(new ProdutoDto(produtoEntity.getIdProduto(), produtoEntity.getNome(), produtoEntity.getPreco(),
 						produtoEntity.getQuantidade(), "Listagem OK."));
 			});
+			
+			requisicao.setProdutos(produtos);
+
+			msgsErro.add("Leitura feita com sucesso.");
+
+			produtoRetorno.setTemErro(Boolean.FALSE);
+			produtoRetorno.setMsgsErro(msgsErro);
+			produtoRetorno.setData(requisicao);
+			
+			Retorno retorno = produtoRetorno;
+			response = Response.ok(retorno, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e){
-			ProdutoDto dto = new ProdutoDto();
-			dto.setMensagem("Erro ao listar produtos: " + e.getMessage());
-			produtos.add(dto);
+			msgsErro.add("Erro ao ler produtos." + e.getMessage());
+			Retorno retorno = new Retorno();
+			retorno.setTemErro(Boolean.TRUE);
+			retorno.setMsgsErro(msgsErro);
+			response = Response.status(Status.OK).entity(retorno).build();
 		}
 
-		return produtos;
+		return response;
 	}
  
 	/**
