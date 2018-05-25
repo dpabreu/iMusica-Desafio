@@ -11,6 +11,18 @@ import javax.persistence.PersistenceContext;
 
 import br.com.desafio.entity.produto.ProdutoEntity;
 
+/**
+ * Classe repositório que atua como a camada responsável pelas transações
+ * do Produto no banco de dados.
+ * 
+ * Esta classe utilizada a anotação TransactionAttribute nos métodos onde
+ * as transações se fazem necessárias. É do tipo REQUIRED, pois aproveita
+ * uma transação já aberta, caso o método seja chamado de um outro local
+ * que já exista a transação em andamento.
+ * 
+ * @author Daniel Abreu
+ *
+ */
 @Stateless
 public class ProdutoRepository {
 	

@@ -14,6 +14,12 @@ import br.com.desafio.repository.produto.ProdutoRepository;
 import br.com.desafio.requisicao.produto.ProdutoRequisicao;
 import br.com.desafio.retorno.produto.ProdutoRetorno;
 
+/**
+ * Esta classe é responsável pela cadamada de negócio do Produto.
+ * 
+ * @author Daniel Abreu
+ *
+ */
 @Stateless
 public class ProdutoController {
 	

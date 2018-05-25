@@ -2,7 +2,6 @@ package br.com.desafio.service.produto;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,8 +19,18 @@ import br.com.desafio.requisicao.produto.ProdutoRequisicao;
 import br.com.desafio.retorno.Retorno;
 import br.com.desafio.retorno.produto.ProdutoRetorno;
 
+/**
+ * Esta classe é responsável pele camada de serviços REST do 
+ * Produto.
+ *  
+ * @author Daniel Abreu
+ *
+ */
 @RequestScoped
 @Path("/service")
+/**
+ * @Produces - determina o formato dos dados que vamos retornar
+ * */
 @Produces("application/json; charset=UTF-8")
 public class ProdutoService{
 	
@@ -30,8 +39,7 @@ public class ProdutoService{
 	
 	/**
 	 * @Consumes - determina o formato dos dados que vamos postar
-	 * @Produces - determina o formato dos dados que vamos retornar
-	 * 
+	 *
 	 * Esse método cadastra um novo produto
 	 * */
 	@POST	
@@ -48,7 +56,7 @@ public class ProdutoService{
 	/**
 	 * Essse método altera um produto já cadastrado
 	 * 
-	 * @param produtoDto
+	 * 
 	 * @return Response
 	 * **/
 	@PUT
@@ -64,11 +72,11 @@ public class ProdutoService{
 	
 	/**
 	 * Esse método lista todos produtos cadastrados na base
-	 * @throws NamingException 
+	 * 
 	 * */
 	@GET
 	@Path("/readAll")
-	public Response readAll() throws NamingException{
+	public Response readAll(){
 		Response response = null;
 		Retorno retorno = new Retorno();
 		retorno = controller.readAll();
@@ -78,6 +86,9 @@ public class ProdutoService{
  
 	/**
 	 * Esse método busca um produto cadastrado pelo id
+	 * 
+	 * @param idProduto
+	 * @return Response
 	 * */
 	@GET
 	@Path("/read/{idProduto}")
@@ -91,6 +102,9 @@ public class ProdutoService{
  
 	/**
 	 * Excluindo um produto pelo id
+	 * 
+	 * @param idProduto
+	 * @return Response
 	 * */
 	@DELETE
 	@Path("/delete/{idProduto}")	
@@ -104,6 +118,10 @@ public class ProdutoService{
 	
 	/**
 	 * Realizando venda de um produto
+	 * 
+	 * @param idProduto
+	 * @param quantidade
+	 * @return Response
 	 * */
 	@PUT
 	@Consumes("application/json; charset=UTF-8")	
