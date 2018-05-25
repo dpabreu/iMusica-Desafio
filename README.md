@@ -5,7 +5,7 @@
 
 ## Instruções
 
-Após realizar o clone do projeto, importar no Eclipe: File -> Import -> Maven -> Existing Maven Projects , clicar em Next e selecionar o diretório onde o clone se encontra e clicar em Finish.
+Após realizar o clone do projeto, importar no Eclipse: File -> Import -> Maven -> Existing Maven Projects , clicar em Next e selecionar o diretório onde o clone se encontra e clicar em Finish.
 
 ## Arquiteturas e Tecnologias usadas:
 
@@ -13,7 +13,7 @@ Banco de dados MySQL:
     Faz-se necessário executar a instrução <CREATE DATABASE desafio;>
 
 Servidor de aplicação Wildfly-10.0.0.Final:
-    No arquivo standalone.xml , na tag <datasource> copiar e colar o seguinte trecho:
+    No arquivo standalone.xml, que se encontra em ..\standalone\configuration , na tag 'datasource' copiar e colar o seguinte trecho:
                
                 <datasource jta="true" jndi-name="java:jboss/desafioDS" pool-name="desafio" enabled="true" use-java-context="true" use-ccm="true">
                     <connection-url>jdbc:mysql://localhost:3306/desafio</connection-url>
@@ -36,7 +36,7 @@ Servidor de aplicação Wildfly-10.0.0.Final:
             
     Representa o data source do banco de dados que foi configurado para o projeto.
 
-    Ainda no arquivo standalone.xml, na tag <drivers> , que fica logo abaixo de <datasource> copiar o seguinte trecho:
+    Ainda no arquivo standalone.xml, na tag 'drivers' , que fica logo abaixo de 'datasource' copiar o seguinte trecho:
     
                     <driver name="com.mysql" module="com.mysql">
                         <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
