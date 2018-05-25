@@ -7,6 +7,10 @@
 
 Após realizar o clone do projeto, importar no Eclipse: File -> Import -> Maven -> Existing Maven Projects , clicar em Next e selecionar o diretório onde o clone se encontra e clicar em Finish.
 
+Importante após a importação do projeto, atualizar o mesmo através do Maven da seguinte forma: Clicar com direito do mouse em cima do projeto -> Maven -> Update Project -> Marca a opção Force Update of Snapshots/Releases -> OK.
+
+Este passo irá baixar todas as dependências configuradas no arquivo pom.xml.
+
 ## Arquiteturas e Tecnologias usadas:
 
 Banco de dados MySQL: 
