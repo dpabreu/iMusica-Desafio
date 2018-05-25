@@ -34,15 +34,18 @@ Servidor de aplicação Wildfly-10.0.0.Final:
                     </statement>
                 </datasource>
             
-    Representa o data source do banco de dados que foi configurado para o projeto.
+    
+   Representa o data source do banco de dados que foi configurado para o projeto.
 
-    Ainda no arquivo standalone.xml, na tag 'drivers' , que fica logo abaixo de 'datasource' copiar o seguinte trecho:
+   Ainda no arquivo standalone.xml, na tag 'drivers' , que fica logo abaixo de 'datasource' copiar o seguinte trecho:
     
                     <driver name="com.mysql" module="com.mysql">
                         <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
                     </driver>
                     
-    Representa do driver do mysql.
+   Representa do driver do mysql.
+
+Após encerradas as configurações, basta rodar a aplicação que estará no seguinte endereço: http://localhost:8085/Desafio
 
 ## Frameworks utilizados
 - J2EE
