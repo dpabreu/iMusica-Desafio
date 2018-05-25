@@ -10,6 +10,7 @@ public class ProdutoRequisicao {
 	private String nome;
 	private Float preco;
 	private Integer quantidade;
+	private Integer qtdVenda;
 	
 	private List<ProdutoDto> produtos;
 
@@ -51,6 +52,14 @@ public class ProdutoRequisicao {
 
 	public void setProdutos(List<ProdutoDto> produtos) {
 		this.produtos = produtos;
+	}
+
+	public Integer getQtdVenda() {
+		return qtdVenda;
+	}
+
+	public void setQtdVenda(Integer qtdVenda) {
+		this.qtdVenda = qtdVenda;
 	}
 	
 }

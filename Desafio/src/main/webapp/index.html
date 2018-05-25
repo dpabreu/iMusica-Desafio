@@ -1,19 +1,113 @@
 <!DOCTYPE html>
 <html>
+<head>
 <meta charset="utf-8">
-<title>iMusica - Desafio</title>
+<title>Loja Virtual</title>
 </head>
 <body data-ng-app="App">
-	<h1>Menu:</h1>
-	<br>
-	<a href="incluir.html">Incluir</a><br>
-	<br>
-	<a href="excluir.html">Excluir</a><br>
-	<br>
-	<a href="consultar.html">Consultar</a><br>
-	
-
-	<script src="lib/angular.min.js"></script>
-	<script src="resources/app.js"></script>
+	<div data-ng-controller="DefafioController as controller">
+		<h1>Loja Virtual - iMusica</h1>
+		<script src="lib/angular.min.js"></script>
+		<script src="resources/desafioController.js"></script>	
+		
+		<div data-ng-if="!controller.mostraCadastro && !controller.mostraVenda" style="border: 0">
+			<h2>Consultar</h2>
+			<div style="border: 1px solid black">
+				<br>
+				<label for="codigoID">Código do Produto: </label>
+				<input type="text" id="codigoID" data-ng-model="controller.container.idProduto">
+				<button type="button" data-ng-click="controller.recuperaProduto()">Pesquisar</button>	
+			</div>
+			<br>
+			<br>
+			<div style="border: 1px solid black">
+				<br>
+				<table border="1">
+					<tr>
+						<th>Código</th>
+						<th>Nome</th>
+						<th>Preço</th>
+						<th>Estoque</th>
+						<th>Ações</th>
+					</tr>
+					<tr data-ng-repeat="item in controller.container.produtos">
+						<td>{{item.idProduto}}</td>
+						<td>{{item.nome}}</td>			
+						<td>{{item.preco}}</td>
+						<td>{{item.quantidade}}</td>
+						<td>
+							<div style="widtg: 100px">
+								<button type="button" data-ng-click="controller.editarProduto(item)"> Editar </button> 
+								<button type="button" data-ng-click="controller.excluir(item.idProduto)"> Excluir</button>
+							</div>
+						</td>			
+					</tr>
+				</table>
+				
+				<br><br>		
+			</div>
+			<div>
+				<br>
+				<br>
+				<button type="button" data-ng-click="controller.incluirProduto()"> Incluir </button>
+				<button type="button" data-ng-click="controller.venda()"> Vender </button><br>		
+			</div>
+		</div>
+		<div data-ng-if="controller.mostraCadastro">
+			<h2>Manter Produto</h2>
+			<div style="border: 1px solid black">
+				<br>
+				<label for="codigoID">Código do Produto: </label>
+				<input type="text" id="codigoID" data-ng-model="controller.container.idProduto" disabled>
+				<br>
+				<br>
+				<label for="nomeID">Nome: </label>
+				<input type="text" id="nomeID" data-ng-model="controller.container.nome">		
+				<br>
+				<br>
+				<label for="precoID">Preço: </label>
+				<input type="text" id="precoID" data-ng-model="controller.container.preco">
+				<br>
+				<br>
+				<label for="quantidadeID">Quantidade: </label>
+				<input type="text" id="quantidadeID" data-ng-model="controller.container.quantidade">
+			</div>
+			<br>
+			<br>
+			<div>
+				<button type="button" data-ng-click="controller.salvar()">Salvar</button>	
+				<button type="button" data-ng-click="controller.voltar('manter')">Voltar</button>	
+			</div>		
+		</div>
+		<div data-ng-if="controller.mostraVenda">
+			<div style="border: 1px solid black">
+				<label for="codigoID">Código do Produto: </label>
+				<input type="text" id="codigoID" data-ng-model="controller.container.idProduto">
+				<button type="button" data-ng-click="controller.recuperaProduto()">Pesquisar</button>
+				<br>
+				<br>
+				<label for="nomeID">Nome: </label>
+				<input type="text" id="nomeID" data-ng-model="controller.container.nome" disabled>		
+				<br>
+				<br>
+				<label for="precoID">Preço: </label>
+				<input type="text" id="precoID" data-ng-model="controller.container.preco" disabled>
+				<br>
+				<br>
+				<label for="quantidadeID">Estoque: </label>
+				<input type="text" id="quantidadeID" data-ng-model="controller.container.quantidade" disabled>
+				<br>
+				<br>
+				<label for="qtdVendaID">Qtd Venda: </label>
+				<input type="text" id="qtdVendaID" data-ng-model="controller.container.qtdVenda">
+				
+				
+			</div>	
+			<br>
+			<br>
+			<button type="button" data-ng-click="controller.vender()">Vender</button>
+			<button type="button" data-ng-click="controller.voltar('venda')">Voltar</button>
+		</div>		
+	</div>	
 </body>
 </html>

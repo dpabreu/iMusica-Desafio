@@ -45,7 +45,7 @@ public class ProdutoService{
 	@POST	
 	@Consumes("application/json; charset=UTF-8")
 	@Path("/create")
-	public Response create(ProdutoDto produto){
+	public Response create(ProdutoRequisicao requisicao){
 		Response response = null;
 		ProdutoDto dto;
 		ProdutoEntity entity = new ProdutoEntity();
@@ -53,9 +53,9 @@ public class ProdutoService{
 			InitialContext init = new InitialContext();
 			repository = (ProdutoController) init.lookup("java:module/ProdutoController");
 
-			entity.setNome(produto.getNome());
-			entity.setPreco(produto.getPreco());
-			entity.setQuantidade(produto.getQuantidade());
+			entity.setNome(requisicao.getNome());
+			entity.setPreco(requisicao.getPreco());
+			entity.setQuantidade(requisicao.getQuantidade());
  
 			repository.salvar(entity);
 			
@@ -81,7 +81,7 @@ public class ProdutoService{
 	@PUT
 	@Consumes("application/json; charset=UTF-8")	
 	@Path("/update")
-	public Response update(ProdutoDto produtoDto){
+	public Response update(ProdutoRequisicao requisicao){
 		Response response = null;
 		ProdutoEntity entity = new ProdutoEntity();
 		ProdutoDto dto;
@@ -90,10 +90,10 @@ public class ProdutoService{
 			InitialContext init = new InitialContext();
 			repository = (ProdutoController) init.lookup("java:module/ProdutoController");
  
-			entity.setIdProduto(produtoDto.getIdProduto());
-			entity.setNome(produtoDto.getNome());
-			entity.setPreco(produtoDto.getPreco());
-			entity.setQuantidade(produtoDto.getQuantidade());
+			entity.setIdProduto(requisicao.getIdProduto());
+			entity.setNome(requisicao.getNome());
+			entity.setPreco(requisicao.getPreco());
+			entity.setQuantidade(requisicao.getQuantidade());
  
 			repository.alterar(entity);
  
@@ -162,24 +162,56 @@ public class ProdutoService{
 	 * */
 	@GET
 	@Path("/read/{idProduto}")
-	public ProdutoDto read(@PathParam("idProduto") Integer idProduto){
-		ProdutoDto dto = null;
+	public Response read(@PathParam("idProduto") Integer idProduto){
+		Response response = null;
+		ProdutoRetorno produtoRetorno = new ProdutoRetorno();
+		ProdutoRequisicao requisicao = new ProdutoRequisicao();
 
+		List<String> msgsErro = new ArrayList<String>();
+		List<ProdutoDto> produtos =  new ArrayList<ProdutoDto>();
+
+		ProdutoDto dto = null;
+		
 		try{
 			InitialContext init = new InitialContext();
 			repository = (ProdutoController) init.lookup("java:module/ProdutoController");
 	
 			ProdutoEntity produtoEntity = repository.getProdutoById(idProduto);
 	 
-			if(produtoEntity != null)
+			if(produtoEntity != null){
 				dto = new ProdutoDto(produtoEntity.getIdProduto(), produtoEntity.getNome(), produtoEntity.getPreco(),
 							produtoEntity.getQuantidade(), "OK.");
+				
+				produtos.add(dto);
+			}
+			
+			if(produtos.size() > 0){
+				requisicao.setIdProduto(dto.getIdProduto());
+				requisicao.setNome(dto.getNome());
+				requisicao.setPreco(dto.getPreco());
+				requisicao.setQuantidade(dto.getQuantidade());
+				requisicao.setProdutos(produtos);
+	
+				msgsErro.add("Leitura feita com sucesso.");
+				produtoRetorno.setTemErro(Boolean.FALSE);
+			}else{
+				msgsErro.add("Produto não localizado.");
+				produtoRetorno.setTemErro(Boolean.TRUE);
+			}
+			produtoRetorno.setMsgsErro(msgsErro);
+			produtoRetorno.setData(requisicao);
+			
+			Retorno retorno = produtoRetorno;
+			response = Response.ok(retorno, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e){
-			dto = new ProdutoDto();
-			dto.setMensagem("Erro ao listar produto: " + e.getMessage());
+			msgsErro.add("Erro ao ler produtos." + e.getMessage());
+			Retorno retorno = new Retorno();
+			retorno.setTemErro(Boolean.TRUE);
+			retorno.setMsgsErro(msgsErro);
+			response = Response.status(Status.OK).entity(retorno).build();
 		}
 
-		return dto;
+		return response;
 	}
  
 	/**
